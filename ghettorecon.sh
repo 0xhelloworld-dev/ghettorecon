@@ -81,4 +81,26 @@ $masterlistoutput=output/$targetfile/subdomainbruteforce/masterlist.txt
 cat $massdnsaltdnsoutput $massdnsoutput | cut -d " " -f 1 |sed 's/.$//' | sort -u > $masterlistoutput
 
 
+### portscan
+#Test command: cat output/att/subdomainbruteforce/masterlist.txt | naabu -silent -exclude-ports 80,443 -ports top-1000 output/att/subdomainanalysis/naabu/naabu.txt
+mkdir -p output/$targetfile/subdomainanalysis/naabu
+naabuoutput=output/$targetfile/subdomainanalysis/naabu/naabu.txt
+cat $masterlistoutput | naabu -silent -exclude-ports  80,443 -ports top-1000 $naabuoutput
+
+
+### find webservers
+#Test command: cat output/att/subdomainbruteforce/masterlist.txt output/att/subdomainanalysis/naabu/naabu.txt | sort -u | fprobe -c 100 -t 3000 > output/att/subdomainanalysis/httprobe/websites.txt
+mkdir -p output/$targetfile/subdomainanalysis/httprobe
+websites=output/$targetfile/subdomainanalysis/httprobe/websites.txt
+cat $masterlistoutput $naabuoutput | sort -u | fprobe -c 100 -t 3000 > $websites
+
+### grab http title
+websitespath=$websites
+httptitleoutput=output/$targetfile/subdomainalysis/httprobe/httptitles.txt
+for i in $(cat $websitespath); do 
+	echo "$i | $(curl --connect-timeout 0.5 $i -so - | grep -iPo '(?<=<title>)(.*)(?=</title>)')"; 
+done | tee -a $httptitleoutput
+
+
+
 
