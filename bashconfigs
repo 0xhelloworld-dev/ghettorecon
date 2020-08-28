@@ -1,0 +1,36 @@
+export GOROOT=/usr/local/go
+export GOPATH=/root/go
+export PATH=/root/go/bin:/usr/local/go/bin:$PATH
+export GO111MODULE=on
+export PATH=/root/Downloads/tools/dirsearch:$PATH
+export PATH=/root/Downloads/tools/massdns/bin:$PATH
+export PATH=/root/Downloads/tools/hacks/kxss:$PATH
+export PATH=/opt/codingo/crithit/crithit:$PATH
+export PATH=/root/Desktop/recon/autorecon/reconscripts/tools:$PATH
+export PATH=/root/Downloads/tools/Arjun:$PATH
+export PATH=/root/Downloads/tools/xsspy:$PATH
+export PATH=/root/Downloads/tools/fresh.py:$PATH
+## Colorize the ls output ##
+alias ls='ls --color=auto'
+
+## Use a long listing format ##
+alias ll='ls -la'
+
+cd /root/Desktop/recon/autorecon/reconscripts
+
+
+## Show hidden files ##
+alias l.='ls -d .* --color=auto'
+
+alias cdhome='function _cdhome(){ cd /root/Desktop/ghettorecon/; };_cdhome'
+alias cdresolve='function _cdresolve(){ cd /root/Desktop/ghettorecon/output/$1/ResolveTLDs; };_cdresolve'
+alias cdsubdomainanalysis='function _cdsubdomainanalysis(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis; };_cdsubdomainanalysis'
+alias cdbruteforcesubdomains='function _cdbruteforcesubdomains(){ cd /root/Desktop/ghettorecon/output/$1/subdomainbruteforce; };_cdbruteforcesubdomains'
+alias cdgowitness='function _cdgowitness(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis/gowitness/; };_cdgowitness'
+alias cdsubdomainenum='function _cdsubdomainenum(){ cd /root/Desktop/ghettorecon/output/$1/subdomains; };_cdsubdomainenum'
+alias cdhttprobe='function _cdhttprobe(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis/httprobe/; };_cdhttprobe'
+alias cdtools='function _cdtools(){ cd /root/Downloads/tools; };_cdtools'
+alias cdkxss='function _cdkxss(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis/kxss/; };_cdkxss'
+alias cdffuf='function _cdffuf(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis/ffuf/; };_cdffuf'
+alias cdwaybackurls='function _cdwaybackurls(){ cd /root/Desktop/ghettorecon/output/$1/subdomainanalysis/waybackurls/; };_cdwaybackurls'
+alias gobusterBrute='function _gobuster(){ gobuster -u $1 -t 50 -w /root/Downloads/tools/wordlists/content_discovery_nullenc0de.txt -o /root/Downloads/tools/output/$2;};_gobuster'
