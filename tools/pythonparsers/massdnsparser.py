@@ -1,18 +1,19 @@
 #!/bin/python3
 import sys
 
-targetfile = sys.argv[1]
-print(targetfile)
+inputfile = sys.argv[1]
+outputlocation = sys.argv[2]
+print(inputfile)
 
 def parseTLDs():
     delimeter = " "
     lines_seen = set()
-    fh = open(f"output/{targetfile}/ResolveTLDs/resolvedtlds.txt","r")
+    fh = open(f"{inputfile}","r")
     for line in fh:
         firstSpaceDelimeter = line.split(delimeter, 1)[0]
         firstSpaceDelimeter = firstSpaceDelimeter.rstrip('.')
         if firstSpaceDelimeter not in lines_seen:
-            tld = open(f"output/{targetfile}/ResolveTLDs/liveTLDs.txt","a")
+            tld = open(f"{outputlocation}","a")
             tld.write(firstSpaceDelimeter + "\n")
             tld.close()
             lines_seen.add(firstSpaceDelimeter)
