@@ -11,7 +11,7 @@ def createCommonSpeakWordlist():
     for domain in topleveldomains:
         scope = domain.strip().rstrip()
         wordlist = open(csWordlist).readlines()
-        print(scope)
+        print(f"Generating commonspeak wordlist on {scope}")
 
         for word in wordlist:
             wordStrip = word.strip().rstrip()

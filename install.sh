@@ -4,7 +4,12 @@ GREEN_START="\033[92m"
 GREEN_END="\033[01m"
 
 #echo -e "$GREEN_START [+] Assuming GO is installed. How to install GO: https://tecadmin.net/install-go-on-debian/$GREEN_END"
+cat bashconfigs >> /root/.profile
+cat bashconfigs >> /root/.bashrc
+source /root/.profile
 
+###add install python3
+#https://linuxize.com/post/how-to-install-python-3-7-on-debian-9/
 
 #Install GO
 apt-get update -y
@@ -15,11 +20,6 @@ wget https://dl.google.com/go/go1.13.3.linux-amd64.tar.gz
 tar -xvf go1.13.3.linux-amd64.tar.gz
 sudo mv go /usr/local
 mkdir -p /root/go
-
-cd /root/Desktop/recon/autorecon/reconscripts/
-cat bashconfigs >> /root/.profile
-cat bashconfigs >> /root/.bashrc
-source /root/.profile
 
 
 apt-get install unzip
@@ -86,13 +86,6 @@ cd /root/Downloads/tools
 go get -u github.com/sensepost/gowitness
 echo -e "$GREEN_START [+] gowitness installation complete! $GREEN_END"
 
-echo -e "$GREEN_START [+] Installing kxss....... $GREEN_END"
-cd /root/Downloads/tools
-git clone https://github.com/tomnomnom/hacks.git
-hacks/kxss
-go build main.go
-mv main kxss
-echo -e "$GREEN_START [+] kxss installation complete! $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing ffuf..... $GREEN_END"
 cd /root/Downloads/tools
@@ -117,18 +110,6 @@ mv /root/Downloads/tools/pentest-tools/smuggler.py /root/Downloads/tools/smuggle
 rm -rf /root/Downloads/tools/pentest-tools
 # we need to figure out which python libraries this tool needs to run. and add the command here: pip3 install colored
 echo -e "$GREEN_START [+] smuggler.py installation complete! $GREEN_END"
-
-echo -e "$GREEN_START [+] Installing CRLF-Injection-Scanner.... $GREEN_END"
-cd /root/Downloads/tools
-git clone https://github.com/0xghostwriter/CRLF-Injection-Scanner.git
-cd CRLF-Injection-Scanner/
-python3 setup.py install
-echo -e "$GREEN_START [+] CRLF-Injection-Scanner installation complete! $GREEN_END"
-
-echo -e "$GREEN_START [+] openredirect scanner..... $GREEN_END"
-cd /root/Downloads/tools
-git clone https://github.com/0xghostwriter/open-redirect-scanner.git
-echo -e "$GREEN_START [+] openredirect scanner installation complete! $GREEN_END"
 
 
 
@@ -163,9 +144,6 @@ echo -e "$GREEN_START [+] Installing unfurl..... $GREEN_END"
 go get -u github.com/tomnomnom/unfurl
 echo -e "$GEEN_START [+] unfurl installation complete! $GREEN_END"
 
-echo -e "$GREEN_START [+] Installing dalfox..... $GREEN_END"
-go get -u github.com/hahwul/dalfox
-echo -e "$GREEN_START [+] Dalfox installation complete $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing qsreplace.... $GREEN_END"
 go get -u github.com/tomnomnom/qsreplace
@@ -179,5 +157,11 @@ echo -e "$GREEN_START [+] naabu installation complete! $GREEN_END"
 echo -e "$GREEN_START [+] Installing subfinder...... $GREEN_END"
 go get -u -v github.com/projectdiscovery/subfinder/cmd/subfinder
 echo -e "$GREEN_START [+] subfinder installation complete! $GREEN_END"
+
+echo -e "$GREEN_START [+] Installing freshpy.... $GREEN_END"
+cd /root/Downloads/tools
+git clone https://github.com/teknogeek/fresh.py && cd fresh.py
+pip3 install -r requirements.txt
+echo -e "$GREEN_START [+] freshpy installation complete
 
 source /root/.bashrc
