@@ -3,7 +3,7 @@ import sys
 
 inputfile = sys.argv[1]
 outputlocation = sys.argv[2]
-print(inputfile)
+print(f"Performing massdns parsing on {inputfile}")
 
 def parseTLDs():
     delimeter = " "

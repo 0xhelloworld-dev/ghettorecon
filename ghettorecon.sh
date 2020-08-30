@@ -1,7 +1,10 @@
 #!/bin/sh
 
 ###Tool Configurations:
+#rundate=$(date +"%m%d%Y")
+#echo Run date: $rundate
 targetfile=$1
+#echo Target filename: $targetfile
 commonspeakwordlist=lists/commonspeak2.txt
 fdnsGzFile=/root/Downloads/2020-02-21-1582243548-fdns_any.json.gz
 altdnswordlist=lists/altdnswords.txt
@@ -29,7 +32,11 @@ python3 tools/pythonparsers/massdnsparser.py $topleveldomainresults $liveTLDOutp
 ###Test command: amass enum -passive -v -o output/att/subdomains/amass.txt -df output/att/ResolveTLDs/liveTLDs.txt
 mkdir -p output/$targetfile/subdomains
 amassresults=output/$targetfile/subdomains/amass.txt
-amass enum -passive -v -o $amassresults -df $liveTLDOutput
+if [ -f "$amassresults" ]; then 
+	echo "Amass results detected"
+else
+	amass enum -passive -v -o $amassresults -df $liveTLDOutput
+fi
 
 ###CommonSpeak2
 ###Test command: python3 tools/pythonparsers/commonspeak2.py att lists/commonspeak2.txt output/att/subdomains/commonspeak2.txt
