@@ -32,11 +32,11 @@ fi
 
 ###Parse TLD results
 liveTLDOutput=output/$targetfile/ResolveTLDs/liveTLDs.txt
-#if [ -f "$liveTLDOutput" ]; then
-#	echo "TLDs parsed... moving on"
-#else
-#	python3 tools/pythonparsers/massdnsparser.py $topleveldomainresults $liveTLDOutput  ###this outputs to output/{targetfile}/ResolveTLDs/liveTLDs.txt
-#fi
+if [ -f "$liveTLDOutput" ]; then
+	echo "TLDs parsed... moving on"
+else
+	python3 tools/pythonparsers/massdnsparser.py $topleveldomainresults $liveTLDOutput  ###this outputs to output/{targetfile}/ResolveTLDs/liveTLDs.txt
+fi
 
 ##########Subdomain Enumeration###########
 ###Amass
