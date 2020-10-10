@@ -94,6 +94,7 @@ else
 	massdns -r $freshpyoutput -t A -o S -w $massdnsoutput --flush $compilesubdomainsresults
 fi
 
+
 ###parse massdns results for domains
 ## Test command: python3 tools/pythonparsers/massdnsparser.py output/att/subdomainbruteforce/massdns.txt output/att/subdomainbruteforce/altdnsinput.txt
 permutationfolder=output/$targetfile/subdomainbruteforce/permutations
@@ -106,10 +107,17 @@ else
 	python3 tools/pythonparsers/massdnsparser.py $massdnsoutput $altdnsinput
 fi
 
-
-###this is where we will integrate the permutation scan. if wc $massdnsaltdnsoutput > 1, continue performing permutation scan on resulting subdomains. 
+### find webservers
 httprobefolder=output/$targetfile/subdomainanalysis/httprobe
 mkdir -p $httprobefolder
+if [ -f "$httprobefolder/massdnshttprobe.txt" ]; then
+	echo performing httprobe scan on massdns output
+	cat $altdnsinput | sort -u | fprobe -c 100 -t 3000  > $httprobefolder/massdnshttprobe.txt
+else
+	echo massdns httprobe scan completed...moving on
+fi
+
+###this is where we will integrate the permutation scan. if wc $massdnsaltdnsoutput > 1, continue performing permutation scan on resulting subdomains. 
 echo permutation counter is $pcounter
 while [ -s $permutationfolder/$pcounter/perm.txt ] || [ "$pcounter" -le 10  ]; #check if previous permutation scan has contents, if it does run this. 
 do
@@ -142,18 +150,15 @@ else
 	cat $permutationfolder/perm*.txt $massdnsoutput | cut -d " " -f 1 |sed 's/.$//' | sort -u > $masterlistoutput #add output/$targetfile/subdomainbruteforce/permutations/perm*.txt
 fi
 
+####create websitemasterlist.txt
+
+
 ### portscan
 #Test command: cat output/att/subdomainbruteforce/masterlist.txt | naabu -silent -exclude-ports 80,443 -ports top-1000 output/att/subdomainanalysis/naabu/naabu.txt
 #mkdir -p output/$targetfile/subdomainanalysis/naabu
 #naabuoutput=output/$targetfile/subdomainanalysis/naabu/naabu.txt
 #cat $masterlistoutput | naabu -silent -exclude-ports  80,443 -ports top-1000 $naabuoutput
 
-### find webservers
-#Test command: cat output/att/subdomainbruteforce/masterlist.txt output/att/subdomainanalysis/naabu/naabu.txt | sort -u | fprobe -c 100 -t 3000 > output/att/subdomainanalysis/httprobe/websites.txt
-need to create an httprobe for the massdns output!!!! httprobe in "while" loop only checks domains that are alive for permutations 
-mkdir -p output/$targetfile/subdomainanalysis/httprobe
-websites=output/$targetfile/subdomainanalysis/httprobe/websites.txt
-cat $masterlistoutput $naabuoutput | sort -u | fprobe -c 100 -t 3000 > $websites
 
 ### grab http title
 #websitespath=$websites
