@@ -9,6 +9,7 @@ commonspeakwordlist=lists/commonspeak2.txt
 fdnsGzFile=/root/Downloads/2020-02-21-1582243548-fdns_any.json.gz
 altdnswordlist=lists/altdnswords.txt
 dirsearchwordlist=lists/dicc.txt
+pwd=$(pwd)
 
 
 ###add a commandline check where you must supply an input file
@@ -109,9 +110,9 @@ else
 fi
 
 ### find webservers
-httprobefolder=output/$targetfile/subdomainanalysis/httprobe
+httprobefolder=output/$targetfile/subdomainanalysis/httprobe #do we need to add $pwd?
 mkdir -p $httprobefolder
-if [ -f "$httprobefolder/massdnshttprobe.txt" ]; then ### for some reason this isn't running
+if [ -f "$httprobefolder/massdnshttprobe.txt" ]; then 
 	echo massdns  httprobe scan completed...moving  on
 else
 	echo performing httprobe scan on massdns output
@@ -146,7 +147,7 @@ else
 fi
 
 #### create httprobe masterlist
-httprobemasterlist=$httprobefolder/masterlisthttprobe.txt
+httprobemasterlist=$pwd/$httprobefolder/masterlisthttprobe.txt #do we need to add $pwd?
 if [ -f "$httprobemasterlist" ]; then
 	echo httprobe masterlist has been previously created
 else
@@ -155,14 +156,36 @@ else
 fi
 
 ##ffuf shit up
-ffuffolder=output/$targetfile/subdomainanalysis/ffuf
+ffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf
+ffufresults=$ffuffolder/results.txt
 if [  -d "$ffuffolder" ]; then
 	echo ffuf has been previously run... skipping ffuf scan
 else
 	echo performing ffuf scan
 	mkdir -p $ffuffolder
 	echo 1: $httprobemasterlist 2: $ffuffolder/results.txt 3: $targetfile
-	/root/Desktop/ghettobash/tools/ffufpluscontentdiscovery.sh /root/Desktop/ghettobash/$httprobemasterlist $ffuffolder/results.txt $targetfile
+	/root/Desktop/ghettobash/tools/ffufpluscontentdiscovery.sh $httprobemasterlist $ffufresults $targetfile #the ffufpluscontentdiscovery.sh script runs out of the 
+fi
+
+#ffuf 403/401
+bypassffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf/401403
+if [ -d "$bypassffuffolder" ]; then
+	echo recursive directory bypass scan has been previously run..  skipping task
+else
+	echo recursively scanning 401/403 directories
+	mkdir -p $bypassffuffolder
+	cat $ffufresults | awk '$1 == 401 || $1 == 403' | cut -d " " -f 3 > $ffuffolder/targets.txt
+	/root/Desktop/ghettobash/tools/ffufrecursive.sh $ffuffolder/targets.txt $bypassffuffolder/results.txt $targetfile
+fi
+
+#critical ffuf
+critffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf/criticalffuf
+if [ -d "$critffuffolder" ]; then
+	echo critical ffuf has run ... skipping task
+else
+	echo starting critical ffuf scan
+	mkdir -p $critffuffolder
+	/root/Desktop/ghettobash/tools/criticalffuf.sh $httprobemasterlist $critffuffolder/results.txt $targetfile
 fi
 
 ###create masterlist of resolved subdomains
