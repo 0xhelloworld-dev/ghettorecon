@@ -146,6 +146,9 @@ else
 	done 
 fi
 
+#getting unique IP addresses from massdns, then passing them to naabu
+#cat massdns.txt  | cut -d " " -f 3|  sort -u | grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' 
+
 #### create httprobe masterlist
 httprobemasterlist=$pwd/$httprobefolder/masterlisthttprobe.txt #do we need to add $pwd?
 if [ -f "$httprobemasterlist" ]; then
@@ -153,6 +156,18 @@ if [ -f "$httprobemasterlist" ]; then
 else
 	echo parsing all httprobe files... creating masterlist
 	cat $httprobefolder/* | sort -u > $httprobemasterlist
+fi
+
+### get http titles
+### grab http title
+httptitleoutput=$pwd/output/$targetfile/subdomainanalysis/httprobe/httptitles.txt
+if [ -f "$httptitleoutput" ]; then
+	echo httptitles have been previously scanned.. skipping task
+else
+	touch $httptitleoutput
+	for i in $(cat $httprobemasterlist); do
+		echo "$i | $(curl --connect-timeout 0.5 $i -so - | grep -iPo '(?<=<title>)(.*)(?=</title>)')";
+	done | tee -a $httptitleoutput
 fi
 
 ##ffuf shit up
@@ -187,6 +202,22 @@ else
 	mkdir -p $critffuffolder
 	/root/Desktop/ghettobash/tools/criticalffuf.sh $httprobemasterlist $critffuffolder/results.txt $targetfile
 fi
+
+
+###gau
+gaufolder=$pwd/output/$targetfile/subdomainanalysis/gau
+if [ -d "$gaufolder" ]; then
+	echo  gau scan has been run...skipping task
+else
+	echo  gau scanning all live URLs
+	mkdir -p $gaufolder
+	cat $httprobemasterlist | unfurl domains | sort -u  > $gaufolder/gaudomains.txt
+	while read domain; do
+  		echo $domain | gau > $gaufolder/$domain
+	done <$gaufolder/gaudomains.txt
+fi
+
+
 
 ###create masterlist of resolved subdomains
 #Test command: cat output/att/subdomainbruteforce/massaltresult.txt output/att/subdomainbruteforce/massdns.txt | cut -d " " -f1 | sed 's/.$//' | sort -u > output/att/subdomainbruteforce/masterlist.txt
