@@ -39,11 +39,6 @@ export GO111MODULE=on
 go get -v -u github.com/OWASP/Amass/v3/...
 echo -e "$GREEN_START [+] Amass installation conplete! $GREEN_END"
 
-#install dirsearch
-echo -e "$GREEN_START [+] Installing Dirsearch.... $GREEN_END"
-cd /root/Downloads/tools
-git clone https://github.com/maurosoria/dirsearch.git
-echo -e "$GREEN_START [+] Dirsearch installation complete! $GREEN_END"
 
 #install massdns
 echo -e "$GREEN_START [+] Installing Massdns.... $GREEN_END"
@@ -59,27 +54,12 @@ cd /root/Downloads/tools
 go get -u github.com/tomnomnom/httprobe
 echo -e "$GREEN_START [+] Httprobe installation complete! $GREEN_END"
 
-#install filter-resolved by tomnomnom
-echo -e "$GREEN_START [+] Installing filter-resolved....$GREEN_END"
-cd /root/Downloads/tools
-go get github.com/tomnomnom/hacks/filter-resolved
-echo -e "$GREEN_START [+] Filter-resolved installation complete! $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing altdns.....$GREEN_END"
 pip install py-altdns
 echo -e "Don't forget to change the Queue python module"
 echo -e "$GREEN_START [+] altdns installation complete! $GREEN_END"
 
-echo -e "$GREEN_START [+] Installing meg...... $GREEN_END"
-cd /root/Downloads/tools
-go get -u github.com/tomnomnom/meg
-echo -e "$GREEN_START [+] meg installation complete! $GREEN_END"
-
-
-echo -e "$GREEN_START [+] Installing waybackurls..... $GREEN_END"
-cd /root/Downloads/tools
-go get github.com/tomnomnom/waybackurls
-echo -e "$GREEN_START [+] waybackurls installation complete! $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing gowitness..... $GREEN_END"
 cd /root/Downloads/tools
@@ -92,10 +72,6 @@ cd /root/Downloads/tools
 go get github.com/ffuf/ffuf
 echo -e "$GREEN_START [+] ffuf installation complete! $GREEN_END"
 
-echo -e "$GREEN_START [+] Installing gf....... $GREEN_END"
-cd /root/Downloads/tools
-go get -u github.com/tomnomnom/gf
-echo -e "$GREEN_START [+] gf installation complete! $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing fprobe....... $GREEN_END"
 cd /root/Downloads/tools
@@ -129,16 +105,6 @@ echo -e "$GREEN_START [+] headless chrome installation complete! $GREEN_END"
 pip3 install tldextract
 echo -e "$GREEN_START [+] Installing github-subdomains.py..... $GREEN_END"
 
-echo -e "$GREEN_START [+] Installing Arjun.... $GREEN_END"
-cd /root/Downloads/tools
-git clone https://github.com/edduu/Arjun.git
-echo -e "$GREEN_START [+] Arjun installation complete! $GREEN_END"
-
-echo -e "$GREEN_START [+] Installing SubOver...... $GREEN_END"
-go get github.com/Ice3man543/SubOver
-cd /root/Desktop/recon/autorecon/reconscripts
-wget https://raw.githubusercontent.com/Ice3man543/SubOver/master/providers.json
-echo -e "$GREEN_START [+] Subover installation complete!" 
 
 echo -e "$GREEN_START [+] Installing unfurl..... $GREEN_END"
 go get -u github.com/tomnomnom/unfurl
@@ -162,6 +128,22 @@ echo -e "$GREEN_START [+] Installing freshpy.... $GREEN_END"
 cd /root/Downloads/tools
 git clone https://github.com/teknogeek/fresh.py && cd fresh.py
 pip3 install -r requirements.txt
-echo -e "$GREEN_START [+] freshpy installation complete
+echo -e "$GREEN_START [+] freshpy installation complete"
+
+echo -e "$GREEN_START [+] Installing subjs.... $GREEN_END"
+go get -u -v github.com/lc/subjs
+echo -e "$GREEN_START [+] subjs installation complete"
+
+echo -e "$GREEN_START [+] Installing hakcheckurl...$GREEN_END"
+go get github.com/hakluke/hakcheckurl
+echo -e "$GREEN_START [+] hakcheckurl installation complete $GREEN_END"
+
+echo -e "$GREEN_START [+] Installing LinkFinder... $GREEN_END"
+cd /root/Downloads/tools
+git clone https://github.com/GerbenJavado/LinkFinder.git
+cd /root/Downloads/tools/LinkFinder
+pip install -r requirements.txt
+python setup.py install
+echo -e "$GREEN_START [+] Linkfinder installation complete $GREEN_END"
 
 source /root/.bashrc
