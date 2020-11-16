@@ -17,7 +17,7 @@ pwd=$(pwd)
 ###freshpy
 freshpyoutput=output/$targetfile/resolvers.txt
 mkdir -p output/$targetfile
-if [ -f "$freshpyoutput" ]; then
+if [ -f "$freshpyoutput" ]; then #output/$targetfile/resolvers.txt
 	echo "fresh.py results detected"
 else
 	fresh.py -o $freshpyoutput
@@ -26,7 +26,7 @@ fi
 ###Resolve Top Level Domains with massdns
 mkdir -p output/$targetfile/ResolveTLDs
 topleveldomainresults=output/$targetfile/ResolveTLDs/resolvedtlds.txt
-if [ -f "$topleveldomainresults" ]; then
+if [ -f "$topleveldomainresults" ]; then #output/$targetfile/ResolveTLDs/resolvedtlds.txt
 	echo "previous TLD resolution results detected... moving on"
 else 
 	massdns -r $freshpyoutput -t A $targetfile -o S -w $topleveldomainresults
@@ -34,7 +34,7 @@ fi
 
 ###Parse TLD results
 liveTLDOutput=output/$targetfile/ResolveTLDs/liveTLDs.txt
-if [ -f "$liveTLDOutput" ]; then
+if [ -f "$liveTLDOutput" ]; then #output/$targetfile/ResolveTLDs/liveTLDs.txt
 	echo "TLDs parsed... moving on"
 else
 	python3 tools/pythonparsers/massdnsparser.py $topleveldomainresults $liveTLDOutput  ###this outputs to output/{targetfile}/ResolveTLDs/liveTLDs.txt
@@ -45,7 +45,7 @@ fi
 ###Test command: amass enum -passive -v -o output/att/subdomains/amass.txt -df output/att/ResolveTLDs/liveTLDs.txt
 mkdir -p output/$targetfile/subdomains
 amassresults=output/$targetfile/subdomains/amass.txt
-if [ -f "$amassresults" ]; then 
+if [ -f "$amassresults" ]; then #output/$targetfile/subdomains/amass.txt
 	echo "Amass results detected... moving on"
 else
 	echo "Running amass scan...." 
@@ -55,7 +55,7 @@ fi
 ###CommonSpeak2
 ###Test command: python3 tools/pythonparsers/commonspeak2.py att lists/commonspeak2.txt output/att/subdomains/commonspeak2.txt
 commonspeakresults=output/$targetfile/subdomains/commonspeak2.txt
-if [ -f "$commonspeakresults" ]; then
+if [ -f "$commonspeakresults" ]; then #output/$targetfile/subdomains/commonspeak2.txt
 	echo "commonspeak results detected... moving on"
 else
 	python3 tools/pythonparsers/commonspeak2.py $targetfile $commonspeakwordlist $commonspeakresults
@@ -71,7 +71,7 @@ fi
 ###Subfinder
 #Test command: subfinder -dL att -o output/att/subdomains/subfinder.txt
 subfinderresults=output/$targetfile/subdomains/subfinder.txt
-if [ -f "$subfinderresults" ]; then
+if [ -f "$subfinderresults" ]; then #output/$targetfile/subdomains/subfinder.txt
 	echo "subfinder results detected... moving on"
 else
 	subfinder -dL $liveTLDOutput -o $subfinderresults
@@ -80,7 +80,7 @@ fi
 #############Subdomain Bruteforcing###########
 #Test command:  cat output/att/subdomains/* | sort -u > output/att/subdomains/compiled.txt
 compilesubdomainsresults=output/$targetfile/subdomains/compiled.txt
-if [ -f "$compilesubdomainsresults" ]; then
+if [ -f "$compilesubdomainsresults" ]; then #output/$targetfile/subdomains/compiled.txt
 	echo "subdomains have been previously compiled... moving on"
 else
 	cat output/$targetfile/subdomains/*.txt | sort -u > $compilesubdomainsresults
@@ -90,7 +90,7 @@ fi
 ### Test command: massdns -r output/att/resolvers.txt -t A -o S -w output/att/subdomainbruteforce/massdns.txt --flush output/att/subdomains/compiled.txt 
 mkdir -p output/$targetfile/subdomainbruteforce
 massdnsoutput=output/$targetfile/subdomainbruteforce/massdns.txt
-if [ -f "$massdnsoutput" ]; then
+if [ -f "$massdnsoutput" ]; then #output/$targetfile/subdomainbruteforce/massdns.txt
 	echo "compiled subdomains have been resolved... moving on"
 else
 	massdns -r $freshpyoutput -t A -o S -w $massdnsoutput --flush $compilesubdomainsresults
@@ -103,7 +103,7 @@ permutationfolder=output/$targetfile/subdomainbruteforce/permutations
 pcounter=1 #pcounter
 mkdir -p $permutationfolder/$pcounter
 altdnsinput=$permutationfolder/$pcounter/perm.txt #this eventually becomes input for altdns
-if [ -f "$altdnsinput" ]; then
+if [ -f "$altdnsinput" ]; then #output/$targetfile/subdomainbruteforce/permutations/1/perm.txt
 	echo  "compiled subdomains have been parsed... moving on"
 else
 	python3 tools/pythonparsers/massdnsparser.py $massdnsoutput $altdnsinput
@@ -203,6 +203,15 @@ else
 	/root/Desktop/ghettobash/tools/criticalffuf.sh $httprobemasterlist $critffuffolder/results.txt $targetfile
 fi
 
+longwordlistffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf/longwordlist
+if [ -d "$longwordlistffuffolder" ]; then
+	echo longwordlist ffuf has run ... skipping task
+else
+	echo starting  longwordlist ffuf scan
+	mkdir -p $longwordlistffuffolder
+	/root/Desktop/ghettobash/tools/ffufpluscontentdiscovery.sh $httprobemasterlist $longwordlistffuffolder/results.txt $targetfile
+fi
+
 
 ###gau
 gaufolder=$pwd/output/$targetfile/subdomainanalysis/gau
@@ -216,6 +225,30 @@ else
   		echo $domain | gau > $gaufolder/$domain
 	done <$gaufolder/gaudomains.txt
 fi
+
+###jsfile scan
+jsfolder=$pwd/output/$targetfile/subdomainanalysis/javascript
+if [ -d "$jsfolder" ]; then
+	echo js scan has been run...skipping task
+else 
+	echo js scanning all live URLs
+	mkdir -p $jsfolder
+	cat $httprobemasterlist | subjs >> $jsfolder/jsfilelinks.txt
+	while read domain;  do 
+		echo $domain | gau | grep ".js$" | uniq | sort >> $jsfolder/jsfilelinks.txt
+	done <$gaufolder/gaudomains.txt
+	cat $jsfolder/jsfilelinks.txt | hakcheckurl -t 80 | grep "200" | cut -d " " -f 2 | sort -u > $jsfolder/livejslinks.txt
+fi
+
+###jsfile endpoint discovery scan
+jsendpoints=$jsfolder/endpoints
+if [ -d "$jsendpoints" ]; then
+	echo js endpoint discovery has been run... skipping task
+else
+	echo js endpoint scanning all live URLs
+	mkdir -p $jsendpoints
+	cd $jsendpoints
+	interlace -tL $jsfolder/livejslinks.txt -threads 5 -c "echo 'Scanning _target_ Now' ; python3 ./root/Downloads/tools/LinkFinder/linkfinder.py -d -i _target_ -o cli >> endpoints.txt" -v
 
 
 
