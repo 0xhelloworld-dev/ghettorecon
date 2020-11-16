@@ -209,7 +209,7 @@ if [ -d "$longwordlistffuffolder" ]; then
 else
 	echo starting  longwordlist ffuf scan
 	mkdir -p $longwordlistffuffolder
-	/root/Desktop/ghettobash/tools/ffufpluscontentdiscovery.sh $httprobemasterlist $longwordlistffuffolder/results.txt $targetfile
+	/root/Desktop/ghettobash/tools/ffufpluscontentdiscoverylong.sh $httprobemasterlist $longwordlistffuffolder/results.txt $targetfile
 fi
 
 

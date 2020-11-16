@@ -146,4 +146,8 @@ pip install -r requirements.txt
 python setup.py install
 echo -e "$GREEN_START [+] Linkfinder installation complete $GREEN_END"
 
+echo -e "$GREEN_START [+] Installing gau... $GREEN_END"
+go get -u -v github.com/lc/gau
+echo -e "$GREEN_START [+] gau  installation complete! $GREEN_END"
+
 source /root/.bashrc
