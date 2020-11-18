@@ -136,7 +136,7 @@ echo -e "$GREEN_START [+] subjs installation complete"
 
 echo -e "$GREEN_START [+] Installing hakcheckurl...$GREEN_END"
 go get github.com/hakluke/hakcheckurl
-echo -e "$GREEN_START [+] hakcheckurl installation complete $GREEN_END"
+echo -e "$GREEN_START [+] hakcheckurl installation complete $GREEN_END" 
 
 echo -e "$GREEN_START [+] Installing LinkFinder... $GREEN_END"
 cd /root/Downloads/tools
@@ -158,6 +158,21 @@ cd Interlace
 python3 setup.py install
 pip install -r requirements.txt
 echo -e "$GREEN_START [+] Interlace installation complete! $GREEN_END"
+
+echo -e "$GREEN_START [+] Installing getjswords.... $GREEN_END" 
+cd /root/Downloads/tools
+mkdir getjswords
+cd getjswords
+wget https://raw.githubusercontent.com/0xghostwriter/Bug-Bounty-Toolz/master/getjswords.py
+echo -e "$GREEN_START [+] getjswords installation complete! $GREEN_END"
+
+echo -e "$GREEN_START [+] Installing SecretFinder.... $GREEN_END"
+cd /root/Downloads/tools
+git clone https://github.com/m4ll0k/SecretFinder.git
+cd SecretFinder
+pip install -r requirements.txt
+pip3 install -r requirements.txt
+echo -e "$GREEN_START [+] secretfinder installation complete! $GREEN_END" 
 
 
 source /root/.bashrc
