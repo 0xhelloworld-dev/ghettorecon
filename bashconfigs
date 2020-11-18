@@ -19,6 +19,7 @@ cd /root/Desktop/ghettobash
 alias l.='ls -d .* --color=auto'
 
 alias cdhome='function _cdhome(){ cd /root/Desktop/ghettobash/; };_cdhome'
+alias cdjs='function _cdjs(){ cd /root/Desktop/ghettobash/output/$1/subdomainanalysis/javascript; };_cdjs'
 alias cdresolve='function _cdresolve(){ cd /root/Desktop/ghettobash/output/$1/ResolveTLDs; };_cdresolve'
 alias cdsubdomainanalysis='function _cdsubdomainanalysis(){ cd /root/Desktop/ghettobash/output/$1/subdomainanalysis; };_cdsubdomainanalysis'
 alias cdbruteforcesubdomains='function _cdbruteforcesubdomains(){ cd /root/Desktop/ghettobash/output/$1/subdomainbruteforce; };_cdbruteforcesubdomains'

@@ -237,7 +237,7 @@ else
 	while read domain;  do 
 		echo $domain | gau | grep ".js$" | uniq | sort >> $jsfolder/jsfilelinks.txt
 	done <$gaufolder/gaudomains.txt
-	cat $jsfolder/jsfilelinks.txt | hakcheckurl -t 80 | grep "200" | cut -d " " -f 2 | sort -u > $jsfolder/livejslinks.txt
+	cat $jsfolder/jsfilelinks.txt | sort -u | hakcheckurl -t 80 | grep "200" | cut -d " " -f 2 | sort -u > $jsfolder/livejslinks.txt
 fi
 
 ###jsfile endpoint discovery scan
@@ -248,7 +248,24 @@ else
 	echo js endpoint scanning all live URLs
 	mkdir -p $jsendpoints
 	cd $jsendpoints
-	interlace -tL $jsfolder/livejslinks.txt -threads 5 -c "echo 'Scanning _target_ Now' ; python3 ./root/Downloads/tools/LinkFinder/linkfinder.py -d -i _target_ -o cli >> endpoints.txt" -v
+	while read domain; do
+		echo $domain | python3 /root/Downloads/tools/LinkFinder/linkfinder.py -d -i $domain  -o cli >> endpoints.txt
+	done <$jsfolder/livejslinks.txt
+#	interlace -tL $jsfolder/livejslinks.txt -threads 5 -c "echo 'Scanning _target_ Now' ; python3 /root/Downloads/tools/LinkFinder/linkfinder.py -d -i _target_ -o cli >> endpoints.txt" -v
+fi
+
+###building customized wordlist based on javascript files
+jswordlist=$jsfolder/endpoints/wordlist
+if [ -d "$jswordlist" ]; then
+	echo javascript wordlist has already been created... skipping task
+else
+	echo creating custom wordlist from javascript files
+	mkdir -p $jswordlist
+	cd $jsendpoints
+	cat endpoints.txt | grep "Running against" -v | grep "Invalid input" -v | sort -u |  grep http | unfurl path | sed 's/^\///' >> $jswordlist/wordlist.txt
+	cat endpoints.txt | grep "Running against" -v | grep "Invalid input" -v | sort -u |  grep http -v | sed 's/^\///g; s/^\///; s/^\///' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g' | sed 's/^\.\///g; s/^\.\.\///g'  | sed 's/^\.\///g; s/^\.\.\///g' >> $jswordlist/wordlist.txt
+	cat $jswordlist/wordlist.txt | sort -u >> $jswordlist/finalwordlist.txt
+fi
 
 
 
