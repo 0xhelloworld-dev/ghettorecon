@@ -18,7 +18,7 @@ echo bruteforcewordlist = $bruteforcewordlist
 cd $workingdirectory
 
 if [[ "$bruteforcewordlist" == 1 ]]; then
-	xargs -P10 -I {} sh -c 'url="{}"; ffuf -s -mc all -c -H "X-Forwarded-For: 127.0.0.1" -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0" -u "{}/FUZZ" -w /root/Desktop/ghettobash/lists/dicc.txt -t 80 -D -e php,asp,aspx,jsp,html,htm,js,tar,zip,sql,tgz,txt,bak -ac -se -of csv -o ${url##*/}-${url%%:*}.csv' < $targethostsfile
+	xargs -P10 -I {} sh -c 'url="{}"; ffuf -s -mc all -c -H "X-Forwarded-For: 127.0.0.1" -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0" -u "{}/FUZZ" -w /root/Desktop/ghettobash/lists/dicc.txt -t 80 -D -e asp,aspx,bak,config,gz,htm,html,jar,js,json,jsp,log,old,php,ppk,rsa,save,shtml,sql,swp,tar,tgz,txt,yaml,yml,zip -ac -se -of csv -o ${url##*/}-${url%%:*}.csv' < $targethostsfile
 fi
 if [[ "$bruteforcewordlist" == 2 ]]; then
 	xargs -P10 -I {} sh -c 'url="{}"; ffuf -s -mc all -c -H "X-Forwarded-For: 127.0.0.1" -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:72.0) Gecko/20100101 Firefox/72.0" -u "{}/FUZZ" -w /root/Desktop/ghettobash/lists/critical.txt -t 80 -ac -se -of csv -o ${url##*/}-${url%%:*}.csv' < $targethostsfile
