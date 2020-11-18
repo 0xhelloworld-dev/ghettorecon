@@ -179,7 +179,8 @@ else
 	echo performing ffuf scan
 	mkdir -p $ffuffolder
 	echo 1: $httprobemasterlist 2: $ffuffolder/results.txt 3: $targetfile
-	/root/Desktop/ghettobash/tools/ffufpluscontentdiscovery.sh $httprobemasterlist $ffufresults $targetfile #the ffufpluscontentdiscovery.sh script runs out of the 
+	echo usage: ./ffufplus.sh targethostsfile workingdirectory wordlist companyfilename
+	/root/Desktop/ghettobash/tools/ffufplus.sh $httprobemasterlist $ffuffolder 1 #the ffufpluscontentdiscovery.sh script runs out of the 
 fi
 
 #ffuf 403/401
@@ -190,7 +191,7 @@ else
 	echo recursively scanning 401/403 directories
 	mkdir -p $bypassffuffolder
 	cat $ffufresults | awk '$1 == 401 || $1 == 403' | cut -d " " -f 3 > $ffuffolder/targets.txt
-	/root/Desktop/ghettobash/tools/ffufrecursive.sh $ffuffolder/targets.txt $bypassffuffolder/results.txt $targetfile
+	/root/Desktop/ghettobash/tools/ffufplus.sh $ffuffolder/targets.txt $bypassffuffolder 1
 fi
 
 #critical ffuf
@@ -200,16 +201,7 @@ if [ -d "$critffuffolder" ]; then
 else
 	echo starting critical ffuf scan
 	mkdir -p $critffuffolder
-	/root/Desktop/ghettobash/tools/criticalffuf.sh $httprobemasterlist $critffuffolder/results.txt $targetfile
-fi
-
-longwordlistffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf/longwordlist
-if [ -d "$longwordlistffuffolder" ]; then
-	echo longwordlist ffuf has run ... skipping task
-else
-	echo starting  longwordlist ffuf scan
-	mkdir -p $longwordlistffuffolder
-	/root/Desktop/ghettobash/tools/ffufpluscontentdiscoverylong.sh $httprobemasterlist $longwordlistffuffolder/results.txt $targetfile
+	/root/Desktop/ghettobash/tools/ffufplus.sh $httprobemasterlist $critffuffolder 2
 fi
 
 
@@ -267,8 +259,37 @@ else
 	cat $jswordlist/wordlist.txt | sort -u >> $jswordlist/finalwordlist.txt
 fi
 
+secretfinder=$jsfolder/secrets
+if [ -d "$secretfinder" ]; then
+	echo secret finder has been run... skipping task
+else 
+	echo running secret finder on all urls
+	mkdir -p $secretfinder
+	cd $secretfinder
+	while read domain; do 
+		python3 /root/Downloads/tools/SecretFinder/SecretFinder.py -i $domain -o cli >> jssecrets.txt 
+	done <$jsfolder/livejslinks.txt
+fi
 
 
+
+
+
+
+
+
+#############
+############
+###############
+
+longwordlistffuffolder=$pwd/output/$targetfile/subdomainanalysis/ffuf/longwordlist
+if [ -d "$longwordlistffuffolder" ]; then
+	echo longwordlist ffuf has run ... skipping task
+else
+	echo starting  longwordlist ffuf scan
+	mkdir -p $longwordlistffuffolder
+	/root/Desktop/ghettobash/tools/ffufplus.sh $httprobemasterlist $longwordlistffuffolder 3
+fi
 ###create masterlist of resolved subdomains
 #Test command: cat output/att/subdomainbruteforce/massaltresult.txt output/att/subdomainbruteforce/massdns.txt | cut -d " " -f1 | sed 's/.$//' | sort -u > output/att/subdomainbruteforce/masterlist.txt
 #masterlistoutput=output/$targetfile/subdomainbruteforce/masterlist.txt
