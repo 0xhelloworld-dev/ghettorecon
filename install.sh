@@ -144,10 +144,20 @@ git clone https://github.com/GerbenJavado/LinkFinder.git
 cd /root/Downloads/tools/LinkFinder
 pip install -r requirements.txt
 python setup.py install
+pip3 install jsbeautifier
 echo -e "$GREEN_START [+] Linkfinder installation complete $GREEN_END"
 
 echo -e "$GREEN_START [+] Installing gau... $GREEN_END"
 go get -u -v github.com/lc/gau
 echo -e "$GREEN_START [+] gau  installation complete! $GREEN_END"
+
+echo -e "$GREEN_START [+] Installing interlace...$GREEN_END"
+cd /root/Downloads/tools
+git clone https://github.com/codingo/Interlace.git
+cd Interlace
+python3 setup.py install
+pip install -r requirements.txt
+echo -e "$GREEN_START [+] Interlace installation complete! $GREEN_END"
+
 
 source /root/.bashrc
