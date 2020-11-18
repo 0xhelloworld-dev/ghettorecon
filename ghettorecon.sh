@@ -5,7 +5,7 @@
 #echo Run date: $rundate
 targetfile=$1
 #echo Target filename: $targetfile
-commonspeakwordlist=lists/commonspeak2.txt
+commonspeakwordlist=lists/best-dns-wordlist.txt
 fdnsGzFile=/root/Downloads/2020-02-21-1582243548-fdns_any.json.gz
 altdnswordlist=lists/altdnswords.txt
 dirsearchwordlist=lists/dicc.txt
