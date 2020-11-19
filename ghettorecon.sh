@@ -121,7 +121,7 @@ fi
 
 ###this is where we will integrate the permutation scan. if wc $massdnsaltdnsoutput > 1, continue performing permutation scan on resulting subdomains. 
 echo permutation counter is $pcounter
-if [ -d "$permutationfolder/1" ]; then
+if [ -d "$permutationfolder/2" ]; then #come BACK and finish this conditional there is a logic flaw with this and when mkdir -p $permutationfolder/$pcounter is created. reasoning for this condition is permutation scan will have to  run at least once if there are ANY live subdomains. 
 	echo "permutation scan has been run already... skipping"
 else
 	while [ -s $permutationfolder/$pcounter/perm.txt ] || [ "$pcounter" -le 10  ]; #check if previous permutation scan has contents, if it does run this. 
