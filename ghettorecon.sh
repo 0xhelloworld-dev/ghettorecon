@@ -225,7 +225,8 @@ if [ -d "$jsfolder" ]; then
 else 
 	echo js scanning all live URLs
 	mkdir -p $jsfolder
-	cat $httprobemasterlist | subjs >> $jsfolder/jsfilelinks.txt
+	cat $ffuffolder/results.txt | awk '$1 == 200' | grep " 0 " -v | cut  -d " " -f 3| sort -u >> $jsfolder/ffuf200.txt
+	cat $httprobemasterlist $jsfolder/ffuf200.txt | sort -u | subjs >> $jsfolder/jsfilelinks.txt
 	while read domain;  do 
 		echo $domain | gau | grep ".js$" | uniq | sort >> $jsfolder/jsfilelinks.txt
 	done <$gaufolder/gaudomains.txt
